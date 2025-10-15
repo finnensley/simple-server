@@ -54,10 +54,44 @@ JS Refresher:
     - ex. finding an item using the item.id
 
 .filter():
-    -
+    - process or refine data before sending a response
+    - filtering arrays of data based on specific criteria
+    - ex. let filteredProducts = allProducts;
+          if (categoryFilter) {
+            filteredProducts = allProducts.filter(product => product.category === categoryFilter);}
+    - ex. if (searchTerm) {
+          const matchingUsers = allUsers.filter(user =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchTerm.toLowerCase()));
+         }
 
 .map():
-    - 
+    - used for data transformation and manipulation within arrays.
+    - creates a new array by calling a provided function on every element in the calling array.
+    - fetching data from a database, transform results into cleaner format:  
+        const rawProducts = await db.query('SELECT * FROM         products');
+        const formattedProducts = rawProducts.map(product => ({
+            id: product.id,
+            name: product.product_name,
+            price: product.unit_price,
+            category: product.category_id // Assuming category names are handled elsewhere
+        }));
+    - ex.   
+            const user = await db.getUserById(req.params.id);
+            if (!user) {
+                 return res.status(404).send('User not found'); }
+            const publicProfile = {
+            username: user.username,
+            email: user.email, // Assuming email is public for this endpoint
+            registrationDate: user.created_at
+        };
+    - ex.
+        // Example: Generating a list of image URLs from an array of image filenames
+         app.get('/gallery', (req, res) => {
+            const imageFilenames = ['image1.jpg', 'image2.png', 'image3.jpeg'];
+            const imageUrls = imageFilenames.map(filename => `/assets/images/${filename}`);
+            res.json(imageUrls);
+          });
 
 .reduce():
     - ex. item.total_quantity = item.locations.reduce((sum, loc) => sum + loc.quantity, 0);
