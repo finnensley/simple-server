@@ -17,6 +17,44 @@ Steps:
     - from directory 
         * node server.js or npm start
         
+Additional Backend Steps using MVC (model view controller):
+    - env 
+        * npm install dotenv
+    - prisma - 
+       * npm install prisma @prisma/client     
+       * npx prisma init
+       * npx prisma format
+       * npx prisma generate
+       * npx prisma migrate dev --name init
+       * npx prisma studio (to view the database)
+    - railway - tables
+    - env, utils, controller, routes folders, prisma client
+    - logic lives in controller
+    - routes live in individual routes(1 file for orders, 1 file for items, etc)
+    - env: Port and Docker URL
+
+MVC Restructuring:
+simpleServer/
+├── controllers/          # Handle request/response logic
+│   ├── itemController.js
+│   ├── locationController.js
+│   └── orderController.js
+├── models/              # Database models (Prisma handles this)
+│   └── index.js         # Prisma client export
+├── routes/              # Route definitions
+│   ├── itemRoutes.js
+│   ├── locationRoutes.js
+│   └── orderRoutes.js
+├── middleware/          # Custom middleware
+│   └── errorHandler.js
+├── config/              # Configuration files
+│   └── database.js
+├── prisma/              # Prisma schema and migrations
+│   └── schema.prisma
+├── server.js            # Main server file
+├── package.json
+└── .env                 # Environment variables
+
 Notes:
 
   const itemId = parseInt(req.params.id); // itemId will contain the input from the url
