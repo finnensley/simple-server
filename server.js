@@ -1,15 +1,18 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
-import ItemsRouter from "./src/routes/ItemsRoutes";
-import LocationsRouter from "./src/routes/LocationsRoutes";
-import OrdersRouter from "./src/routes/OrdersRoutes";
+import ItemsRouter from "./src/routes/ItemsRoutes.js";
+// import LocationsRouter from "./src/routes/LocationsRoutes.js";
+// import OrdersRouter from "./src/routes/OrdersRoutes.js";
+import prisma from './src/utils/client.js';
 
+dotenv.config();
 
 const app = express();
+// const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-// app.use(express.json());
+//Middleware
+app.use(express.json());
 
 // app.use((req, res, next) => {
 //   console.log("request coming through");
@@ -23,8 +26,8 @@ app.get("/", (req, res) => {
 
 // defining our routes for each grouped endpoint, get, post, put, patch, delete
 app.use('/items', ItemsRouter);
-app.use('/locations', LocationsRouter);
-app.use('/orders', OrdersRouter);
+// app.use('/locations', LocationsRouter);
+// app.use('/orders', OrdersRouter);
 
 app.listen(PORT, () => {
   console.log("Running Server: " + PORT);

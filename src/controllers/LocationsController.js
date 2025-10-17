@@ -1,4 +1,4 @@
-import prisma from "../utils/client";
-import { getLocations } from "../services/LocationsServices";
+import prisma from "../utils/client.js";
+import { getLocations } from "../services/LocationsServices.js";
 
 // when a request fails

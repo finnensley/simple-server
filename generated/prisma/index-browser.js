@@ -120,9 +120,65 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.ItemScalarFieldEnum = {
+  id: 'id',
+  picture: 'picture',
+  sku: 'sku',
+  description: 'description',
+  total_quantity: 'total_quantity'
+};
+
+exports.Prisma.LocationScalarFieldEnum = {
+  id: 'id',
+  location: 'location'
+};
+
+exports.Prisma.ItemLocationScalarFieldEnum = {
+  id: 'id',
+  quantity: 'quantity',
+  item_id: 'item_id',
+  location_id: 'location_id'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  order_number: 'order_number'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  sku: 'sku',
+  description: 'description',
+  quantity: 'quantity',
+  subtotal: 'subtotal',
+  taxes: 'taxes',
+  shipping_paid: 'shipping_paid',
+  order_id: 'order_id',
+  item_id: 'item_id'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  Item: 'Item',
+  Location: 'Location',
+  ItemLocation: 'ItemLocation',
+  Order: 'Order',
+  OrderItem: 'OrderItem'
 };
 
 /**

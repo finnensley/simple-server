@@ -1,20 +1,22 @@
 import express from "express";
+
 import {
   getAllItems,
   getItemById,
   getItemByDescription,
   addNewItem,
   updateItemDescription,
-} from "../controllers/ItemsController";
+  deleteItem
+} from "../controllers/ItemsController.js";
 
 const router = express.Router();
 
 // prefixed with /items
-router.get("/", getAllItems);
-router.get("/:id", getItemById);
-router.get("/:description", getItemByDescription);
-router.post("/", addNewItem);
-router.put("/:id/:description", updateItemDescription);
-router.delete("/");
+router.get("/", getAllItems); //localhost:3000/
+router.get("/:id", getItemById); //localhost:3000/items/1
+router.get("/search/:description", getItemByDescription); //localhost:3000/items/search/mug
+router.post("/", addNewItem); // localhost:3000/items
+router.put("/:id/", updateItemDescription); // localhost:3000/items/1
+router.delete("/:id", deleteItem);
 
 export default router;

@@ -1,4 +1,5 @@
-Set up a simple server using node.js and express
+Step 1: Set up a simple server using node.js and express
+Step 2: Prisma and Railway
 
 Steps:
     - npm init -y, npm install express, npm install nodemon
@@ -25,9 +26,18 @@ Additional Backend Steps using MVC (model view controller):
        * npx prisma init
        * npx prisma format
        * npx prisma generate
+
+       to start local prisma database:
        * npx prisma migrate dev --name init
+       * npx prisma generate
        * npx prisma studio (to view the database)
+       
     - railway - tables
+       * brew install railway
+       * railway login
+       * railway link
+       * railway variables
+       * railway run npx prisma db push ? did not work
     - env, utils, controller, routes folders, prisma client
     - logic lives in controller
     - routes live in individual routes(1 file for orders, 1 file for items, etc)
@@ -151,3 +161,9 @@ Error Codes:
 404 - Not found: server can't process the request due to syntax issues or invalid parameters, used for items
 400 - Bad request: server can't find the requested source. Url may be incorrect, "description" or "sku" not found
 200 - success message: "Item deleted successfully"
+
+Initial Commands to use:
+Terminal 1: npx prisma migrate dev --name init
+Terminal 2: npx prisma generate
+            npm start
+Terminal 3: npx prisma studio

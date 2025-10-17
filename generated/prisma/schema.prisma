@@ -13,3 +13,83 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Item {
+  id             Int     @id @default(autoincrement())
+  picture        String?
+  sku            Int     @unique
+  description    String
+  total_quantity Int     @default(0)
+
+  // Relations
+  locations  ItemLocation[]
+  orderItems OrderItem[]
+
+  @@map("items")
+}
+
+model Location {
+  id       Int @id @default(autoincrement())
+  location Int @unique
+
+  // Relations
+  items ItemLocation[]
+
+  @@map("locations")
+}
+
+model ItemLocation {
+  id       Int @id @default(autoincrement())
+  quantity Int @default(0)
+
+  // Foreign keys
+  item_id     Int
+  location_id Int
+
+  // Relations
+  item     Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [location_id], references: [id], onDelete: Cascade)
+
+  @@unique([item_id, location_id])
+  @@map("item_locations")
+}
+
+model Order {
+  id           Int @id @default(autoincrement())
+  order_number Int @unique
+
+  // Relations
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id            Int    @id @default(autoincrement())
+  sku           Int
+  description   String
+  quantity      Int
+  subtotal      Float
+  taxes         Float
+  shipping_paid Float
+
+  // Foreign keys
+  order_id Int
+  item_id  Int
+
+  // Relations
+  order Order @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  item  Item  @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+//Mapping looks like this
+// //Item record
+// { id: 1, sku: 111111, description: "plate", total_quantity: 10 }
+
+// // Location record  
+// { id: 1, location: 1 }
+
+// // ItemLocation record (junction)
+// { id: 1, item_id: 1, location_id: 1, quantity: 10 }

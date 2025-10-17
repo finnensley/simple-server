@@ -3,6 +3,7 @@ import {} from "../controllers/LocationsController"
 
 const router = express.Router();
 
+
 router.get("/locations", (req, res) => {
 
 })

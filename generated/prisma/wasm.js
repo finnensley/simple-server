@@ -92,9 +92,65 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.ItemScalarFieldEnum = {
+  id: 'id',
+  picture: 'picture',
+  sku: 'sku',
+  description: 'description',
+  total_quantity: 'total_quantity'
+};
+
+exports.Prisma.LocationScalarFieldEnum = {
+  id: 'id',
+  location: 'location'
+};
+
+exports.Prisma.ItemLocationScalarFieldEnum = {
+  id: 'id',
+  quantity: 'quantity',
+  item_id: 'item_id',
+  location_id: 'location_id'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  order_number: 'order_number'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  sku: 'sku',
+  description: 'description',
+  quantity: 'quantity',
+  subtotal: 'subtotal',
+  taxes: 'taxes',
+  shipping_paid: 'shipping_paid',
+  order_id: 'order_id',
+  item_id: 'item_id'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-
+  Item: 'Item',
+  Location: 'Location',
+  ItemLocation: 'ItemLocation',
+  Order: 'Order',
+  OrderItem: 'OrderItem'
 };
 /**
  * Create the Client
@@ -125,7 +181,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
@@ -144,13 +200,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n",
-  "inlineSchemaHash": "99605b976d14dee99c394828b1c2a62deafc51a4fda3251761a240d4cc88e515",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Item {\n  id             Int     @id @default(autoincrement())\n  picture        String?\n  sku            Int     @unique\n  description    String\n  total_quantity Int     @default(0)\n\n  // Relations\n  locations  ItemLocation[]\n  orderItems OrderItem[]\n\n  @@map(\"items\")\n}\n\nmodel Location {\n  id       Int @id @default(autoincrement())\n  location Int @unique\n\n  // Relations\n  items ItemLocation[]\n\n  @@map(\"locations\")\n}\n\nmodel ItemLocation {\n  id       Int @id @default(autoincrement())\n  quantity Int @default(0)\n\n  // Foreign keys\n  item_id     Int\n  location_id Int\n\n  // Relations\n  item     Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)\n  location Location @relation(fields: [location_id], references: [id], onDelete: Cascade)\n\n  @@unique([item_id, location_id])\n  @@map(\"item_locations\")\n}\n\nmodel Order {\n  id           Int @id @default(autoincrement())\n  order_number Int @unique\n\n  // Relations\n  items OrderItem[]\n\n  @@map(\"orders\")\n}\n\nmodel OrderItem {\n  id            Int    @id @default(autoincrement())\n  sku           Int\n  description   String\n  quantity      Int\n  subtotal      Float\n  taxes         Float\n  shipping_paid Float\n\n  // Foreign keys\n  order_id Int\n  item_id  Int\n\n  // Relations\n  order Order @relation(fields: [order_id], references: [id], onDelete: Cascade)\n  item  Item  @relation(fields: [item_id], references: [id], onDelete: Cascade)\n\n  @@map(\"order_items\")\n}\n\n//Mapping looks like this\n// //Item record\n// { id: 1, sku: 111111, description: \"plate\", total_quantity: 10 }\n\n// // Location record  \n// { id: 1, location: 1 }\n\n// // ItemLocation record (junction)\n// { id: 1, item_id: 1, location_id: 1, quantity: 10 }\n",
+  "inlineSchemaHash": "34daf89fb9e6a85cd1b072b8cce92a533473caa7a8902001c4fb732d86d0c0f2",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Item\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"picture\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total_quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"locations\",\"kind\":\"object\",\"type\":\"ItemLocation\",\"relationName\":\"ItemToItemLocation\"},{\"name\":\"orderItems\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"ItemToOrderItem\"}],\"dbName\":\"items\"},\"Location\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"ItemLocation\",\"relationName\":\"ItemLocationToLocation\"}],\"dbName\":\"locations\"},\"ItemLocation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"location_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"item\",\"kind\":\"object\",\"type\":\"Item\",\"relationName\":\"ItemToItemLocation\"},{\"name\":\"location\",\"kind\":\"object\",\"type\":\"Location\",\"relationName\":\"ItemLocationToLocation\"}],\"dbName\":\"item_locations\"},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order_number\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"}],\"dbName\":\"orders\"},\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"subtotal\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"taxes\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"shipping_paid\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"order_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"item_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"item\",\"kind\":\"object\",\"type\":\"Item\",\"relationName\":\"ItemToOrderItem\"}],\"dbName\":\"order_items\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
