@@ -1,5 +1,5 @@
 Step 1: Set up a simple server using node.js and express
-Step 2: Prisma and Railway
+Step 2: Prisma and Railway - https://simple-server-production-3c3b.up.railway.app
 
 Steps:
     - npm init -y, npm install express, npm install nodemon
