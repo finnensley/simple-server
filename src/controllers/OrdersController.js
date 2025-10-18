@@ -30,7 +30,7 @@ export const addNewOrder = async (req, res) => {
           prisma.orderItem.create({
             data: {
               order_id: newOrder.id,
-              item_id: item.item_id,
+              item_id: item_id,
               quantity: item.quantity,
               subtotal: item.subtotal,
               taxes: item.taxes,
