@@ -3,11 +3,11 @@ import prisma from "../utils/client.js";
 // things failed getting data
 
 export const getOrders = async () => {
-  return await prisma.order.findMany()({
+  return await prisma.order.findMany({
     include: {
-      orderItems: {
+      items: {
         include: {
-          item: true, // Include item details
+          item: true, // Includes item details
         },
       },
     },
