@@ -46,12 +46,8 @@ export const addNewOrder = async (req, res) => {
       const orderWithItems = await prisma.order.findUnique({
         where: { id: newOrder.id },
         include: {
-          orderItems: {
-            include: {
-              item: true, // Include item details
-            },
+          items: true, 
           },
-        },
       });
       res.json({ success: true, data: orderWithItems });
     } else {
