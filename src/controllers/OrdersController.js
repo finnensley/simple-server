@@ -31,6 +31,8 @@ export const addNewOrder = async (req, res) => {
             data: {
               order_id: newOrder.id,
               item_id: item.id,
+              sku: item.sku,
+              description: item.description,
               quantity: item.quantity,
               subtotal: item.subtotal,
               taxes: item.taxes,
