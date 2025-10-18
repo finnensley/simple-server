@@ -2,7 +2,14 @@ import prisma from "../utils/client.js";
 
 // things failed getting data
 
-export const getOrders = async (req, res) =>  {
-    const orders = await prisma.order.findMany();
-    return orders;
-}
+export const getOrders = async () => {
+  return await prisma.order.findMany()({
+    include: {
+      orderItems: {
+        include: {
+          item: true, // Include item details
+        },
+      },
+    },
+  });
+};

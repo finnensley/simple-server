@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import ItemsRouter from "./src/routes/ItemsRoutes.js";
-// import LocationsRouter from "./src/routes/LocationsRoutes.js";
-// import OrdersRouter from "./src/routes/OrdersRoutes.js";
+import LocationsRouter from "./src/routes/LocationsRoutes.js";
+import OrdersRouter from "./src/routes/OrdersRoutes.js";
 import prisma from './src/utils/client.js';
 
 dotenv.config();
@@ -26,8 +26,8 @@ app.get("/", (req, res) => {
 
 // defining our routes for each grouped endpoint, get, post, put, patch, delete
 app.use('/items', ItemsRouter);
-// app.use('/locations', LocationsRouter);
-// app.use('/orders', OrdersRouter);
+app.use('/locations', LocationsRouter);
+app.use('/orders', OrdersRouter);
 
 app.listen(PORT, () => {
   console.log("Running Server: " + PORT);

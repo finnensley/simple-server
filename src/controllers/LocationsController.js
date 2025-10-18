@@ -3,9 +3,10 @@ import { getLocations } from "../services/LocationsServices.js";
 
 // when a request fails
 
+
 export const getAllLocations = async (req, res, next) => {
   try {
-    const locationss = await getLocationss();
+    const locations = await getLocations();
     res.json({ success: true, data: locations });
   } catch (err) {
     next(err);
@@ -18,7 +19,7 @@ export const addNewLocation = async (req, res) => {
     const { location } = req.body;
     const newLocation = await prisma.location.create({
       data: {
-        location,
+        location: location,
       },
     });
     res.json({ success: true, data: newLocation });
@@ -58,7 +59,7 @@ export const updateLocationQuantity = async (req, res) => {
     }
 
     const updatedLocationQuantity = await prisma.itemLocation.upsert({
-    where: {
+      where: {
         item_id_location_id: {
           item_id: itemId,
           location_id: locationId,
@@ -79,39 +80,3 @@ export const updateLocationQuantity = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-// //Update location quantity for an item
-// app.put("/items/:id/locations/:locationId", (req, res) => {
-//   const itemId = parseInt(req.params.id);
-//   const locationId = parseInt(req.params.locationId);
-//   const { quantity } = req.body;
-
-//   //find the item.id
-//   const item = items.find((item) => item.id === itemId);
-//   if (!item) {
-//     return res.status(404).json({ error: "Item not found" });
-//   }
-//   //find the location within the item's location array
-//   const locationIndex = item.locations.findIndex(
-//     (loc) => loc.id === locationId
-//   );
-//   if (!locationIndex === -1) {
-//     return res.status(400).json({ error: "Location not found" });
-//   }
-
-//   if (quantity === undefined || quantity < 0) {
-//     return res.status(400).json({ error: "Add a valid quantity" });
-//   }
-
-//   item.locations[locationIndex].quantity = parseInt(quantity);
-
-//   item.total_quantity = item.locations.reduce(
-//     (sum, location) => sum + location.quantity,
-//     0
-//   );
-
-//   res.json({
-//     success: true,
-//     message: "Location quantity updated",
-//     item: item,
-//   });
-// });

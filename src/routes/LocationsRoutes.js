@@ -2,18 +2,19 @@ import express from "express";
 import {
   getAllLocations,
   addNewLocation,
-  updateLocation,
+  updateLocationQuantity,
   
-} from "../controllers/LocationsController";
+} from "../controllers/LocationsController.js";
 
 const router = express.Router();
 
-router.get("/locations", getAllLocations);
+// prefixed with /locations
+router.get("/", getAllLocations);
 
-router.post("/locations", addNewLocation);
+router.post("/", addNewLocation);
 
-router.put("/locations", updateLocation);
+router.put("/:id/:locationId", updateLocationQuantity);
 
-router.delete("/locations");
+// router.delete("/locations");
 
 export default router;

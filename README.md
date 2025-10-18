@@ -162,8 +162,10 @@ Error Codes:
 400 - Bad request: server can't find the requested source. Url may be incorrect, "description" or "sku" not found
 200 - success message: "Item deleted successfully"
 
-Initial Commands to use:
+Initial Commands to use if running locally:
 Terminal 1: npx prisma migrate dev --name init
 Terminal 2: npx prisma generate
             npm start
 Terminal 3: npx prisma studio
+
+
