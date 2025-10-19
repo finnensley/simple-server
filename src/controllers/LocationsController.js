@@ -3,13 +3,42 @@ import { getLocations } from "../services/LocationsServices.js";
 
 // when a request fails
 
-
 export const getAllLocations = async (req, res, next) => {
   try {
     const locations = await getLocations();
     res.json({ success: true, data: locations });
   } catch (err) {
     next(err);
+  }
+};
+
+// .get
+export const getLocationWithItems = async (req, res) => {
+  try {
+    const locationId = parseInt(req.params.id);
+    
+    const location = await prisma.location.findUnique({
+      where: { id: locationId },
+      include: {
+        items: {  
+          include: {
+            item: true,
+          },
+        },
+      },
+    });
+
+    if (!location) {
+      return res.status(404).json({
+        success: false,
+        error: "Location not found",
+      });
+    }
+
+    res.json({ success: true, data: location });
+  } catch (error) {
+    console.log("Error getting location:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -29,6 +58,58 @@ export const addNewLocation = async (req, res) => {
   }
 };
 
+//.post
+export const addItemToLocation = async (req, res) => {
+  try {
+    const locationId = parseInt(req.params.locationId);
+    const { item_id, quantity } = req.body;
+    // check if location exists
+    const location = await prisma.location.findUnique({
+      where: { id: locationId },
+    });
+
+    if (!location) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Location not found" });
+    }
+    // check if item exists
+    const item = await prisma.item.findUnique({
+      where: { id: item_id },
+    });
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        error: "Item not found",
+      });
+    }
+
+       // Add item to location (or update quantity if already exists)
+    const itemLocation = await prisma.itemLocation.upsert({
+      where: {
+        item_id_location_id: {
+          item_id: item_id,
+          location_id: locationId,
+        },
+      },
+      update: {
+        quantity: quantity,
+      },
+      create: {
+        item_id: item_id,
+        location_id: locationId,
+        quantity: quantity,
+      },
+    });
+
+    res.json({ success: true, data: itemLocation });
+  } catch (error) {
+    console.log("Error adding item to location:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+  
 //.put
 export const updateLocationQuantity = async (req, res) => {
   try {
