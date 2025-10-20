@@ -139,6 +139,24 @@ export const updateLocationQuantity = async (req, res) => {
       });
     }
 
+        // If quantity is 0, remove the item-location relationship
+    if (quantity === 0) {
+      await prisma.itemLocation.delete({
+        where: {
+          item_id_location_id: {
+            item_id: itemId,
+            location_id: locationId,
+          },
+        },
+      });
+
+      res.json({ 
+        success: true, 
+        message: `Item ${itemId} removed from location ${locationId}`,
+        removed: true
+      });
+    } else {
+      // Otherwise, upsert (create or update) the quantity
     const updatedLocationQuantity = await prisma.itemLocation.upsert({
       where: {
         item_id_location_id: {
