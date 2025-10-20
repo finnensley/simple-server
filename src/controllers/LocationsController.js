@@ -174,6 +174,7 @@ export const updateLocationQuantity = async (req, res) => {
       },
     });
     res.json({ success: true, data: updatedLocationQuantity });
+  }
   } catch (error) {
     console.log("Location quantity not updated:", error);
     res.status(500).json({ success: false, error: error.message });
