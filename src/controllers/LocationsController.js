@@ -161,3 +161,115 @@ export const updateLocationQuantity = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+//.patch
+//.patch - Decrement item quantity at location
+export const decrementItemQuantity = async (req, res) => {
+  try {
+    const locationId = parseInt(req.params.locationId);
+    const itemId = parseInt(req.params.itemId);
+    const { quantity } = req.body; // Amount to remove
+
+    // Check if the item-location relationship exists
+    const itemLocation = await prisma.itemLocation.findUnique({
+      where: {
+        item_id_location_id: {
+          item_id: itemId,
+          location_id: locationId,
+        },
+      },
+    });
+
+    if (!itemLocation) {
+      return res.status(404).json({
+        success: false,
+        error: "Item not found at this location",
+      });
+    }
+
+    const newQuantity = itemLocation.quantity - quantity;
+
+    // If quantity would be 0 or less, remove the item-location relationship
+    if (newQuantity <= 0) {
+      await prisma.itemLocation.delete({
+        where: {
+          item_id_location_id: {
+            item_id: itemId,
+            location_id: locationId,
+          },
+        },
+      });
+
+      res.json({ 
+        success: true, 
+        message: `Item ${itemId} completely removed from location ${locationId}`,
+        removed: true
+      });
+    } else {
+      // Otherwise, update the quantity
+      const updatedItemLocation = await prisma.itemLocation.update({
+        where: {
+          item_id_location_id: {
+            item_id: itemId,
+            location_id: locationId,
+          },
+        },
+        data: {
+          quantity: newQuantity,
+        },
+      });
+
+      res.json({ 
+        success: true, 
+        data: updatedItemLocation,
+        message: `Quantity decremented to ${newQuantity}`
+      });
+    }
+  } catch (error) {
+    console.log("Error decrementing item quantity:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+//.delete
+export const deleteItemFromLocation = async (req, res) => {
+  try {
+    const locationId = parseInt(req.params.locationId);
+    const itemId = parseInt(req.params.itemId);
+
+    // Check if the item-location relationship exists
+    const itemLocation = await prisma.itemLocation.findUnique({
+      where: {
+        item_id_location_id: {
+          item_id: itemId,
+          location_id: locationId,
+        },
+      },
+    });
+
+    if (!itemLocation) {
+      return res.status(404).json({
+        success: false,
+        error: "Item not found at this location",
+      });
+    }
+
+    // Delete the item-location relationship
+    await prisma.itemLocation.delete({
+      where: {
+        item_id_location_id: {
+          item_id: itemId,
+          location_id: locationId,
+        },
+      },
+    });
+
+    res.json({ 
+      success: true, 
+      message: `Item ${itemId} removed from location ${locationId}` 
+    });
+  } catch (error) {
+    console.log("Error removing item from location:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
