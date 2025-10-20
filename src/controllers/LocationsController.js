@@ -16,11 +16,11 @@ export const getAllLocations = async (req, res, next) => {
 export const getLocationWithItems = async (req, res) => {
   try {
     const locationId = parseInt(req.params.id);
-    
+
     const location = await prisma.location.findUnique({
       where: { id: locationId },
       include: {
-        items: {  
+        items: {
           include: {
             item: true,
           },
@@ -85,7 +85,7 @@ export const addItemToLocation = async (req, res) => {
       });
     }
 
-       // Add item to location (or update quantity if already exists)
+    // Add item to location (or update quantity if already exists)
     const itemLocation = await prisma.itemLocation.upsert({
       where: {
         item_id_location_id: {
@@ -109,7 +109,7 @@ export const addItemToLocation = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-  
+
 //.put
 export const updateLocationQuantity = async (req, res) => {
   try {
@@ -139,7 +139,7 @@ export const updateLocationQuantity = async (req, res) => {
       });
     }
 
-        // If quantity is 0, remove the item-location relationship
+    // If quantity is 0, remove the item-location relationship
     if (quantity === 0) {
       await prisma.itemLocation.delete({
         where: {
@@ -150,145 +150,33 @@ export const updateLocationQuantity = async (req, res) => {
         },
       });
 
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: `Item ${itemId} removed from location ${locationId}`,
-        removed: true
+        removed: true,
       });
     } else {
       // Otherwise, upsert (create or update) the quantity
-    const updatedLocationQuantity = await prisma.itemLocation.upsert({
-      where: {
-        item_id_location_id: {
+      const updatedLocationQuantity = await prisma.itemLocation.upsert({
+        where: {
+          item_id_location_id: {
+            item_id: itemId,
+            location_id: locationId,
+          },
+        },
+        update: {
+          quantity: quantity,
+        },
+        create: {
           item_id: itemId,
           location_id: locationId,
+          quantity: quantity,
         },
-      },
-      update: {
-        quantity: quantity,
-      },
-      create: {
-        item_id: itemId,
-        location_id: locationId,
-        quantity: quantity,
-      },
-    });
-    res.json({ success: true, data: updatedLocationQuantity });
-  }
+      });
+      res.json({ success: true, data: updatedLocationQuantity });
+    }
   } catch (error) {
     console.log("Location quantity not updated:", error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
-
-//.patch
-//.patch - Decrement item quantity at location
-export const decrementItemQuantity = async (req, res) => {
-  try {
-    const locationId = parseInt(req.params.locationId);
-    const itemId = parseInt(req.params.itemId);
-    const { quantity } = req.body; // Amount to remove
-
-    // Check if the item-location relationship exists
-    const itemLocation = await prisma.itemLocation.findUnique({
-      where: {
-        item_id_location_id: {
-          item_id: itemId,
-          location_id: locationId,
-        },
-      },
-    });
-
-    if (!itemLocation) {
-      return res.status(404).json({
-        success: false,
-        error: "Item not found at this location",
-      });
-    }
-
-    const newQuantity = itemLocation.quantity - quantity;
-
-    // If quantity would be 0 or less, remove the item-location relationship
-    if (newQuantity <= 0) {
-      await prisma.itemLocation.delete({
-        where: {
-          item_id_location_id: {
-            item_id: itemId,
-            location_id: locationId,
-          },
-        },
-      });
-
-      res.json({ 
-        success: true, 
-        message: `Item ${itemId} completely removed from location ${locationId}`,
-        removed: true
-      });
-    } else {
-      // Otherwise, update the quantity
-      const updatedItemLocation = await prisma.itemLocation.update({
-        where: {
-          item_id_location_id: {
-            item_id: itemId,
-            location_id: locationId,
-          },
-        },
-        data: {
-          quantity: newQuantity,
-        },
-      });
-
-      res.json({ 
-        success: true, 
-        data: updatedItemLocation,
-        message: `Quantity decremented to ${newQuantity}`
-      });
-    }
-  } catch (error) {
-    console.log("Error decrementing item quantity:", error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
-
-//.delete
-export const deleteItemFromLocation = async (req, res) => {
-  try {
-    const locationId = parseInt(req.params.locationId);
-    const itemId = parseInt(req.params.itemId);
-
-    // Check if the item-location relationship exists
-    const itemLocation = await prisma.itemLocation.findUnique({
-      where: {
-        item_id_location_id: {
-          item_id: itemId,
-          location_id: locationId,
-        },
-      },
-    });
-
-    if (!itemLocation) {
-      return res.status(404).json({
-        success: false,
-        error: "Item not found at this location",
-      });
-    }
-
-    // Delete the item-location relationship
-    await prisma.itemLocation.delete({
-      where: {
-        item_id_location_id: {
-          item_id: itemId,
-          location_id: locationId,
-        },
-      },
-    });
-
-    res.json({ 
-      success: true, 
-      message: `Item ${itemId} removed from location ${locationId}` 
-    });
-  } catch (error) {
-    console.log("Error removing item from location:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

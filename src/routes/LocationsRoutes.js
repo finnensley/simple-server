@@ -14,7 +14,7 @@ router.get("/", getAllLocations);
 router.get("/:id", getLocationWithItems);
 router.post("/", addNewLocation);
 router.post("/:locationId/items", addItemToLocation);
-router.put("/:id/:locationId/items/:id", updateLocationQuantity);
+router.put("/:locationId/items/:id", updateLocationQuantity);
 
 // router.delete("/locations");
 
